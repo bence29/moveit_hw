@@ -1,0 +1,8 @@
+Környezet: kuka_drivers és kuka_robot_descriptions a humble branchen
+
+source install/local_setup.bash
+colcon build --packages-select moveit_hw
+ros2 launch moveit_hw startup.launch.py
+ros2 lifecycle set /robot_manager configure
+ros2 lifecycle set /robot_manager activate
+ros2 launch moveit_hw hw.launch.py
