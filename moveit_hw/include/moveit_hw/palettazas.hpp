@@ -208,11 +208,7 @@ void pickAndPlace(moveit::planning_interface::MoveGroupInterface &move_group_int
   }();
 
   // moveit_visual_tools.prompt("Press 'Next' to move to box_" + std::to_string(iterator));
-  move_group_interface.allowReplanning(true);
-  // move_group_interface.setPlanningTime(20.0);
-  move_group_interface.setReplanAttempts(30);
-  move_group_interface.setLookAroundAttempts(50);
-  move_group_interface.setNumPlanningAttempts(100);
+  move_group_interface.setPlanningTime(20.0);
   MoveToPose(box_pick_up_pose, move_group_interface, moveit_visual_tools, logger);
 
   // Attach the cylinder to the end-effector
@@ -241,11 +237,7 @@ void pickAndPlace(moveit::planning_interface::MoveGroupInterface &move_group_int
   }();
 
   // moveit_visual_tools.prompt("Press 'Next' to move to startingPoint_" + std::to_string(iterator));
-  move_group_interface.allowReplanning(true);
-  // move_group_interface.setPlanningTime(20.0);
-  move_group_interface.setReplanAttempts(30);
-  move_group_interface.setLookAroundAttempts(50);
-  move_group_interface.setNumPlanningAttempts(100);
+  move_group_interface.setPlanningTime(20.0);
   MoveToPose(put_down_pose, move_group_interface, moveit_visual_tools, logger);
 
   // Detach the box from the end-effector

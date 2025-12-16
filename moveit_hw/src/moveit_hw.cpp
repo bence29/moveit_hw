@@ -8,8 +8,6 @@
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 
 #include "moveit_hw/utils.hpp"
-/* #include "moveit_hw/first_scenario.hpp"
-#include "moveit_hw/second_scenario.hpp" */
 #include "moveit_hw/palettazas.hpp"
 
 int main(int argc, char *argv[])
@@ -31,8 +29,8 @@ int main(int argc, char *argv[])
 
   // Create the MoveIt MoveGroup Interface
   auto move_group_interface = moveit::planning_interface::MoveGroupInterface(node, "manipulator");
-  move_group_interface.setPlanningPipelineId("chomp"); //planner fajtája ompl
-  move_group_interface.setPlannerId("CHOMP");  //RRTConnectkConfigDefault
+  move_group_interface.setPlanningPipelineId("ompl"); //planner fajtája ompl
+  move_group_interface.setPlannerId("RRTConnectkConfigDefault");  //RRTConnectkConfigDefault
 
   auto moveit_visual_tools = moveit_visual_tools::MoveItVisualTools(
       node, "world", rviz_visual_tools::RVIZ_MARKER_TOPIC, move_group_interface.getRobotModel());
@@ -54,25 +52,6 @@ int main(int argc, char *argv[])
   palettazas(move_group_interface, moveit_visual_tools, logger, node);
   ClearScene(moveit_visual_tools);
   MoveToHome(move_group_interface, logger);
-
-  // Edit the MoveIt MoveGroup Interface
-/*   move_group_interface = moveit::planning_interface::MoveGroupInterface(node, "manipulator");
-  move_group_interface.setPlanningPipelineId("chomp"); //planner fajtája
-  move_group_interface.setPlannerId("CHOMP");
-
-  moveit_visual_tools = moveit_visual_tools::MoveItVisualTools(
-      node, "world", rviz_visual_tools::RVIZ_MARKER_TOPIC, move_group_interface.getRobotModel());
-  moveit_visual_tools.deleteAllMarkers();
-  moveit_visual_tools.loadRemoteControl();
-  moveit_visual_tools.trigger();
-
-  RCLCPP_INFO(logger, "Planning frame: %s\tEnd-effector link: %s",
-    move_group_interface.getPlanningFrame().c_str(), move_group_interface.getEndEffectorLink().c_str());
-
-  // Palettazes chomp-al
-  palettazas(move_group_interface, moveit_visual_tools, logger, node);
-  ClearScene(moveit_visual_tools);
-  MoveToHome(move_group_interface, logger); */
 
   // Shutdown ROS
   rclcpp::shutdown();
