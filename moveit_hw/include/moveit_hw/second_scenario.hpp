@@ -89,13 +89,6 @@ void SetupScene()
   planning_scene_interface.applyCollisionObjects(objects, colors);
 }
 
-//GetObjectPosition függvény deklarálása
-static const geometry_msgs::msg::Point GetObjectPosition(const std::string object_id)
-{
-  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-  return planning_scene_interface.getObjects({object_id})[object_id].pose.position;
-}
-
 void SecondScenario(  //ez a "main"
     moveit::planning_interface::MoveGroupInterface &move_group_interface,
     moveit_visual_tools::MoveItVisualTools &moveit_visual_tools,
@@ -125,7 +118,7 @@ void SecondScenario(  //ez a "main"
 
     msg.position.x = cylinder_pos.x;
     msg.position.y = cylinder_pos.y;
-    msg.position.z = cylinder_pos.z + 0.30; //+ 0.06;
+    msg.position.z = cylinder_pos.z + 0.06; //+ 0.06;
     return msg;
   }();
   MoveToPose(pick_up_pose, move_group_interface, moveit_visual_tools, logger);

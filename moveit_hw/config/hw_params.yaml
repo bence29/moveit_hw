@@ -1,0 +1,14 @@
+moveit_hw:
+  ros__parameters:
+    X_global_offs_p: 0.0
+    Y_global_offs_p: 0.8
+    Z_global_offs_p: 0.0
+    Box_xcoord_p: 1.0
+    Box_ycoord_p: 0.0
+    Box_zcoord_p: 0.455
+    Box_width_p: 0.12
+    Box_length_p: 0.22
+    Box_height_p: 0.12
+    placementWidth_p: 0.20
+    placementLength_p: 0.30
+    placementHeight_p: 0.02

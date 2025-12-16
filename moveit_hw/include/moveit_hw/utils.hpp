@@ -77,10 +77,12 @@ void MoveToPose(
     moveit_visual_tools.trigger();
     moveit_visual_tools.prompt("Press 'Next' to continue");
     move_group_interface.execute(plan);
+    //return true;
   }
   else
   {
-    RCLCPP_ERROR(logger, "Planing failed!");
+    RCLCPP_ERROR(logger, "Planning failed!");
+    //return false;
   }
 }
 
@@ -121,13 +123,20 @@ void MoveToHome(
   MoveToHome(move_group_interface, logger);
 }
 
+//GetObjectPosition függvény deklarálása
+static const geometry_msgs::msg::Point GetObjectPosition(const std::string object_id)
+{
+  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+  return planning_scene_interface.getObjects({object_id})[object_id].pose.position;
+}
+
 void ClearScene(moveit_visual_tools::MoveItVisualTools &moveit_visual_tools)
 {
   moveit_visual_tools.prompt("Press 'Next' to clear the scene");
   const auto objects_to_remove = []
   {
     std::vector<moveit_msgs::msg::CollisionObject> objects(0);
-    for (const auto name : {"box", "table1", "table2", "cylinder", "euro_pallet", "centerPoint"})
+    for (const auto name : {"box", "table1", "table2", "cylinder", "euro_pallet", "centerPoint", "startingPoint_1", "startingPoint_2", "startingPoint_3", "startingPoint_4", "startingPoint_5", "startingPoint_6", "startingPoint_7", "startingPoint_8", "startingPoint_9", "startingPoint_10", "startingPoint_11", "startingPoint_12", "startingPoint_13", "startingPoint_14", "startingPoint_15", "startingPoint_16", "box_1", "box_2", "box_3", "box_4", "box_5", "box_6", "box_7", "box_8", "box_9", "box_10", "box_11", "box_12", "box_13", "box_14", "box_15", "box_16"})
     {
       moveit_msgs::msg::CollisionObject object;
       object.id = name;
