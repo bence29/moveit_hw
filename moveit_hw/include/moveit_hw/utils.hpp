@@ -5,6 +5,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
+#include <stdbool.h>
 
 namespace Constants
 {
@@ -48,7 +49,7 @@ void Setup()
   planning_scene_interface.applyCollisionObject(object, color);
 }
 
-void MoveToPose(
+bool MoveToPose(
     const geometry_msgs::msg::Pose target_pose,
     moveit::planning_interface::MoveGroupInterface &move_group_interface,
     moveit_visual_tools::MoveItVisualTools &moveit_visual_tools,
@@ -77,12 +78,58 @@ void MoveToPose(
     moveit_visual_tools.trigger();
     moveit_visual_tools.prompt("Press 'Next' to continue");
     move_group_interface.execute(plan);
-    //return true;
+    return true;
   }
   else
   {
     RCLCPP_ERROR(logger, "Planning failed!");
-    //return false;
+    return false;
+  }
+}
+
+bool MoveToPose_chomp(
+    const geometry_msgs::msg::Pose target_pose,
+    moveit::planning_interface::MoveGroupInterface &move_group_interface,
+    moveit_visual_tools::MoveItVisualTools &moveit_visual_tools,
+    const rclcpp::Logger &logger)
+{
+  // Clear previous markers
+  moveit_visual_tools.deleteAllMarkers();
+  moveit_visual_tools.trigger();
+
+  auto current_state = move_group_interface.getCurrentState();
+  const moveit::core::JointModelGroup* joint_model_group = 
+      current_state->getJointModelGroup(move_group_interface.getName());
+
+  if (current_state->setFromIK(joint_model_group, target_pose)) {
+      std::vector<double> jvt;
+      current_state->copyJointGroupPositions(joint_model_group, jvt);
+      
+      // SET JOINT TARGET EXPLICITLY
+      move_group_interface.setJointValueTarget(jvt);
+  }
+
+  // Create the plan (using the joint-space goal)
+  const auto [success, plan] = [&move_group_interface] {
+      moveit::planning_interface::MoveGroupInterface::Plan msg;
+      const auto ok = static_cast<bool>(move_group_interface.plan(msg));
+      return std::make_pair(ok, msg);
+  }();
+
+  // Execute the plan
+  if (success)
+  {
+    moveit_visual_tools.publishTrajectoryLine(
+        plan.trajectory_, move_group_interface.getRobotModel()->getJointModelGroup("manipulator"));
+    moveit_visual_tools.trigger();
+    moveit_visual_tools.prompt("Press 'Next' to continue");
+    move_group_interface.execute(plan);
+    return true;
+  }
+  else
+  {
+    RCLCPP_ERROR(logger, "Planning failed!");
+    return false;
   }
 }
 

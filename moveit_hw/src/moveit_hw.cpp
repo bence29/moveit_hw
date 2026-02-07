@@ -8,7 +8,8 @@
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 
 #include "moveit_hw/utils.hpp"
-#include "moveit_hw/palettazas.hpp"
+#include "moveit_hw/palettazas_ompl.hpp"
+#include "moveit_hw/palettazas_chomp.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +42,11 @@ int main(int argc, char *argv[])
   RCLCPP_INFO(logger, "Planning frame: %s\tEnd-effector link: %s",
     move_group_interface.getPlanningFrame().c_str(), move_group_interface.getEndEffectorLink().c_str());
 
+  // Create the MoveIt MoveGroup Interface
+  auto move_group_interface_chomp = moveit::planning_interface::MoveGroupInterface(node, "manipulator");
+  move_group_interface_chomp.setPlanningPipelineId("chomp"); //planner fajtája ompl
+  move_group_interface_chomp.setPlannerId("CHOMP");  //RRTConnectkConfigDefault
+
   //Delete previous scenes
   move_group_interface.detachObject();
   ClearScene(moveit_visual_tools);
@@ -49,7 +55,12 @@ int main(int argc, char *argv[])
   MoveToHome(move_group_interface, logger);
 
   // Palettazes ompl-el
-  palettazas(move_group_interface, moveit_visual_tools, logger, node);
+  palettazas_ompl(move_group_interface, moveit_visual_tools, logger, node);
+  ClearScene(moveit_visual_tools);
+  MoveToHome(move_group_interface, logger);
+
+  // Palettazes chomp-al
+  palettazas_chomp(move_group_interface_chomp, moveit_visual_tools, logger, node);
   ClearScene(moveit_visual_tools);
   MoveToHome(move_group_interface, logger);
 
